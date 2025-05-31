@@ -3,6 +3,7 @@ import { RootState } from '@/store/store';
 import { Product } from '@/types/product';
 import { formatPriceFromUSD } from '@/utils/currency';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,9 +21,20 @@ export function GroceryCard({ product }: { product: Product }) {
   const handleUpdateQuantity = (change: number) => {
     dispatch(updateQuantity({ id: product.id, quantity: change }));
   };
+  const handlePress = () => {
+    router.push({
+      pathname: `/screens/ProductScreen`,
+      params: {
+        product: JSON.stringify(product)
+      }
+    });
+  };
 
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.card} 
+    activeOpacity={0.8}
+    onPress={handlePress}
+    >
       <Image
         source={{ uri: product.thumbnail }}
         style={styles.image}

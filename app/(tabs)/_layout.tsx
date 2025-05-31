@@ -20,7 +20,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Provider store={store}>
+    
     <Tabs
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
@@ -53,7 +53,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    </Provider>
+
   );
 }
 
