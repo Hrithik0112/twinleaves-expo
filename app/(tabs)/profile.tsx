@@ -2,11 +2,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons';
+import { resetAndNavigateTo } from '@/utils/Navigation';
 
 const Profile = () => {
   const handleLogout = () => {
     // Add your logout logic here
     console.log('Logging out...');
+    resetAndNavigateTo('/(auth)/login');
   };
 
   return (
