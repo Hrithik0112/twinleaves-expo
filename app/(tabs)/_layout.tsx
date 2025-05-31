@@ -5,6 +5,8 @@ import { View, StyleSheet } from "react-native";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Header from "@/components/Header";
+import { Provider } from "react-redux";
+import { store } from "@/store/store";
 
 
 function TabBarIcon(props: {
@@ -18,6 +20,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <Provider store={store}>
     <Tabs
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
@@ -50,6 +53,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </Provider>
   );
 }
 

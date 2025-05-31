@@ -1,8 +1,26 @@
+import { addToCart, updateQuantity } from '@/store/cartSlice';
+import { RootState } from '@/store/store';
+import { Product } from '@/types/product';
+import { formatPriceFromUSD } from '@/utils/currency';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Product } from '@/types/product'; // adjust path as needed
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 export function GroceryCard({ product }: { product: Product }) {
+  const dispatch = useDispatch();
+  const cartItem = useSelector((state: RootState) => 
+    state.cart.items.find(item => item.id === product.id)
+  );
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
+  };
+
+  const handleUpdateQuantity = (change: number) => {
+    dispatch(updateQuantity({ id: product.id, quantity: change }));
+  };
+
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8}>
       <Image
@@ -21,7 +39,9 @@ export function GroceryCard({ product }: { product: Product }) {
         </Text>
 
         <View style={styles.row}>
-          <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+          <Text style={styles.price}>
+            {formatPriceFromUSD(product.price)}
+          </Text>
           <Text style={styles.discount}>-{product.discountPercentage}%</Text>
         </View>
 
@@ -38,16 +58,38 @@ export function GroceryCard({ product }: { product: Product }) {
             {product.availabilityStatus}
           </Text>
         </View>
-        <TouchableOpacity 
-          style={styles.addToCartButton}
-          onPress={() => console.log('Add to cart:', product.title)}
-        >
-          <Text style={styles.addToCartText}>Add to Cart</Text>
-        </TouchableOpacity>
+
+        {cartItem ? (
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity 
+              style={styles.quantityButton}
+              onPress={() => handleUpdateQuantity(-1)}
+            >
+              <Ionicons name="remove" size={20} color="#fff" />
+            </TouchableOpacity>
+            
+            <Text style={styles.quantityText}>{cartItem.quantity}</Text>
+            
+            <TouchableOpacity 
+              style={styles.quantityButton}
+              onPress={() => handleUpdateQuantity(1)}
+            >
+              <Ionicons name="add" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity 
+            style={styles.addToCartButton}
+            onPress={handleAddToCart}
+          >
+            <Text style={styles.addToCartText}>Add to Cart</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
 }
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
@@ -122,9 +164,34 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
-   addToCartText: {
+  addToCartText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  quantityButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginHorizontal: 16,
+    color: '#333',
   },
 });
